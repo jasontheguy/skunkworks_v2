@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
-
+using Skunkworks_v2.Models;
 namespace Skunkworks_v2.Controllers
 {
     [Route("api/[controller]")]
@@ -12,31 +12,8 @@ namespace Skunkworks_v2.Controllers
     public class ValuesController : ControllerBase
     {
 
-        //private readonly SqlConnection conn = new SqlConnection("Data Source = LAT7490-6J7M0N2; Initial Catalog = test; Integrated Security = True");
+        private readonly SqlConnection conn = new SqlConnection("Data Source = lat7490-6j7m0n2; Initial Catalog = Test; Integrated Security = True");
 
-        /* Overly complicated. Start using and searching .NET API documentation
-        [HttpGet]
-        public string complicated_formatTime() {
-            int value = DateTime.Now.Month - 1;
-            int fullMonth = 0;
-
-            string[] months = {"January", "February", "March", "April", "May", "June", "July",
-                "August", "September", "October", "November", "December" };
-
-            for (int i = 0; i < months.Length; i++)
-            {
-                if (value == i)
-                {
-                    fullMonth = i;
-                }
-
-            }
-            string full_month = String.Format("The full month is {0}", months[fullMonth]);
-            return full_month;
-        }
-        */
-        
-        // Refactored method to return date. Read and use .NET API documentation.
         [HttpGet]
         public string uncomplicated_formatTime()
         {
@@ -57,8 +34,19 @@ namespace Skunkworks_v2.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post()
         {
+            conn.Open();    
+            string post_query = "INSERT INTO dbo.students(_id,FirstName, LastName, Age, Grade, Teacher) VALUES(@ID ,@FirstName, @LastName, @Age, @Grade,@Teacher)";
+            SqlCommand exec = new SqlCommand(post_query, conn);
+            exec.Parameters.AddWithValue("@ID", 1);
+            exec.Parameters.AddWithValue("@FirstName", "James");
+            exec.Parameters.AddWithValue("@LastName", "Dingle");
+            exec.Parameters.AddWithValue("@Age", 15);
+            exec.Parameters.AddWithValue("@Grade", 10);
+            exec.Parameters.AddWithValue("@Teacher", "Jessica Apple");
+            exec.BeginExecuteNonQuery();
+            conn.Close();
         }
 
         // PUT api/values/5
