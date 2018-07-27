@@ -43,6 +43,8 @@ namespace Skunkworks_v2.Controllers
         [HttpPost]
         public void Post()
         {
+
+            // For connections need to implement try, catch, finally or {using}
             conn.Open();    
             string post_query = "INSERT INTO dbo.students(FirstName, LastName, Age, Grade) VALUES(@FirstName, @LastName, @Age, @Grade)";
             SqlCommand exec = new SqlCommand(post_query, conn);
@@ -59,18 +61,28 @@ namespace Skunkworks_v2.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+
+
+
+
+
+
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            //Commented out code possible solution to AutoIncrement ID issue?
             int ID = id;
             string del_query = "DELETE FROM dbo.students WHERE _id = @id";
+            //string reset_auto = "DBCC CHECKIDENT (dbo.students,RESEED,0)";
             conn.Open();
+            //SqlCommand reset = new SqlCommand(reset_auto, conn);
             SqlCommand exec = new SqlCommand(del_query, conn);
             exec.Parameters.AddWithValue("@id", ID);
             exec.BeginExecuteNonQuery();
+            //reset.BeginExecuteNonQuery();
             conn.Close();
 
         }
